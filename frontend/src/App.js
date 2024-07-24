@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
+import {Link, Route, Routes} from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
 import Prediction from './components/Prediction';
@@ -11,22 +11,19 @@ import Profile from "./components/Profile";
 
 function App() {
     return (
-        <Router>
-            <AuthProvider>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route element={<ProtectedRoute />}>
-                        <Route path="/predict" element={<Prediction />} />
-                        <Route path="/leaderboard" element={<Leaderboard />} />
-                        <Route path="/profile" element={<Profile />} />
-                    </Route>
-
-                </Routes>
-            </AuthProvider>
-        </Router>
+        <AuthProvider>
+            <Header />
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/predict" element={<Prediction />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Route>
+            </Routes>
+        </AuthProvider>
     );
 }
 
