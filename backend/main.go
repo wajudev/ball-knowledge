@@ -6,8 +6,26 @@ import (
 	"game-knowledge/backend/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"log"
+	"os"
 	"path/filepath"
 )
+
+func init() {
+	// Load environment variables from .env file
+	err := godotenv.Load("properties.env")
+	if err != nil {
+		log.Println("Error loading .env file:", err)
+	} else {
+		log.Println(".env file loaded successfully")
+	}
+
+	// Log the environment variables to verify they are being read correctly
+	log.Println("API_FOOTBALL_KEY:", os.Getenv("API_FOOTBALL_KEY"))
+	log.Println("LEAGUE_ID:", os.Getenv("LEAGUE_ID"))
+	log.Println("SEASON:", os.Getenv("SEASON"))
+}
 
 func main() {
 	// Set up the router with CORS enabled

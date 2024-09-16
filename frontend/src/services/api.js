@@ -59,3 +59,13 @@ export const getProfile = async () => {
     const response = await api.get(`/profile`);
     return response.data;
 }
+
+export const getPrediction = async (matchId) => {
+    const response = await api.get(`/predictions/${matchId}`);
+    return response.data;
+}
+
+export const getMatchesForGameWeek = async (gameWeek) => {
+    const response = await api.get(`/matches/${gameWeek}`);
+    return response.data;
+}
