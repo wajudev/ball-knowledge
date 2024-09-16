@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createPrediction, getMatches } from '../services/api';
+import { createPrediction, getMatches, getPrediction } from '../services/api';
 
 const Prediction = () => {
     const [matches, setMatches] = useState([]);
@@ -7,19 +7,34 @@ const Prediction = () => {
     const [predictedScoreHome, setPredictedScoreHome] = useState('');
     const [predictedScoreAway, setPredictedScoreAway] = useState('');
     const [message, setMessage] = useState('');
+    const [existingPrediction, setExistingPrediction] = useState(null);
 
     useEffect(() => {
         const fetchMatches = async () => {
             try {
                 const response = await getMatches();
-                setMatches(response.data);
+                setMatches(response.data || []);  // Ensure that matches is an empty array if no data is returned
             } catch (error) {
                 console.error('Error fetching matches:', error);
             }
         };
 
-        fetchMatches();
+        fetchMatches().then(r => console.log(r));
     }, []);
+
+    useEffect(() => {
+        const fetchPrediction = async () => {
+            if (selectedMatchId) {
+                try {
+                    const response = await getPrediction(selectedMatchId);
+                    setExistingPrediction(response.data || null);  // Ensure that existingPrediction is null if no data is returned
+                } catch (error) {
+                    console.error('Error fetching prediction:', error);
+                }
+            }
+        };
+        fetchPrediction().then(r => console.log(r));
+    }, [selectedMatchId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,27 +60,37 @@ const Prediction = () => {
                 required
             >
                 <option value="" disabled>Select a match</option>
-                {matches.map((match) => (
-                    <option key={match.id} value={match.id}>
-                        {match.home_team} vs {match.away_team} - {match.date}
-                    </option>
-                ))}
+                {matches.length > 0 ? (
+                    matches.map((match) => (
+                        <option key={match.id} value={match.id}>
+                            {match.home_team} vs {match.away_team} - {match.date}
+                        </option>
+                    ))
+                ) : (
+                    <option disabled>No matches available</option>
+                )}
             </select>
-            <input
-                type="number"
-                value={predictedScoreHome}
-                onChange={(e) => setPredictedScoreHome(e.target.value)}
-                placeholder="Predicted Score Team 1"
-                required
-            />
-            <input
-                type="number"
-                value={predictedScoreAway}
-                onChange={(e) => setPredictedScoreAway(e.target.value)}
-                placeholder="Predicted Score Team 2"
-                required
-            />
-            <button type="submit">Submit Prediction</button>
+            {existingPrediction ? (
+                <p>You have already made a prediction for this match: {existingPrediction.predicted_score_home} - {existingPrediction.predicted_score_away}</p>
+            ) : (
+                <>
+                    <input
+                        type="number"
+                        value={predictedScoreHome}
+                        onChange={(e) => setPredictedScoreHome(e.target.value)}
+                        placeholder="Predicted Score Home"
+                        required
+                    />
+                    <input
+                        type="number"
+                        value={predictedScoreAway}
+                        onChange={(e) => setPredictedScoreAway(e.target.value)}
+                        placeholder="Predicted Score Away"
+                        required
+                    />
+                    <button type="submit">Submit Prediction</button>
+                </>
+            )}
             {message && <p>{message}</p>}
         </form>
     );

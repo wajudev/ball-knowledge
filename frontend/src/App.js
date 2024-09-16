@@ -8,6 +8,8 @@ import {AuthProvider, useAuth} from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Leaderboard from "./components/Leaderboard";
 import Profile from "./components/Profile";
+import Matches from "./components/Matches";
+
 
 function App() {
     return (
@@ -21,6 +23,7 @@ function App() {
                     <Route path="/predict" element={<Prediction />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/matches/:gameweek" element={<Matches />} />
                 </Route>
             </Routes>
         </AuthProvider>

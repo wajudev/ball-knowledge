@@ -22,7 +22,10 @@ type Match struct {
 	HomeTeam string    `json:"home_team" binding:"required"`
 	AwayTeam string    `json:"away_team" binding:"required"`
 	Date     string    `json:"date" binding:"required"`
-	Result   string    `json:"result"`
+	League   string    `json:"league" binding:"required"`
+	Season   string    `json:"season" binding:"required"`
+	MatchDay int       `json:"match_day" binding:"required"`
+	Result   string    `json:"result"` // Stores the full-time score in "home:away" format
 }
 
 func (match *Match) BeforeCreate(*gorm.DB) (err error) {
@@ -32,8 +35,8 @@ func (match *Match) BeforeCreate(*gorm.DB) (err error) {
 
 type Prediction struct {
 	ID                 uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()" json:"id"`
-	UserID             uuid.UUID `gorm:"type:uuid" json:"user_id"`
-	MatchID            uuid.UUID `gorm:"type:uuid" json:"match_id"`
+	UserID             uuid.UUID `gorm:"type:uuid" gorm:"uniqueIndex:idx_user_match" json:"user_id"`
+	MatchID            uuid.UUID `gorm:"type:uuid" gorm:"uniqueIndex:idx_user_match" json:"match_id"`
 	PredictedScoreHome int       `json:"predicted_score_home" binding:"required"`
 	PredictedScoreAway int       `json:"predicted_score_away" binding:"required"`
 	Points             int       `json:"points"`

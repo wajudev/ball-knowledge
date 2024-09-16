@@ -23,6 +23,7 @@ func ConnectDatabase() error {
 		fmt.Println("AutoMigrate failed, error occurred: ", err)
 		return err
 	}
+
 	DB = database
 	return nil
 }
