@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"game-knowledge/backend/controllers"
-	"game-knowledge/backend/middleware"
+	"ball-knowledge/backend/controllers"
+	"ball-knowledge/backend/middleware"
 
 	"github.com/gin-gonic/gin"
 )

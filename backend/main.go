@@ -1,18 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
-	"context"
 	"syscall"
 	"time"
 
-	"game-knowledge/backend/database"
-	"game-knowledge/backend/routes"
+	"ball-knowledge/backend/database"
+	"ball-knowledge/backend/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

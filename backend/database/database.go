@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"game-knowledge/backend/models"
+	"ball-knowledge/backend/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -20,7 +20,7 @@ func ConnectDatabase() error {
 	// Configure GORM logger
 	logLevel := logger.Silent
 	if os.Getenv("GIN_MODE") == "debug" {
-		logLevel = logger.Warn // Changed from Info to Warn to reduce noise
+		logLevel = logger.Info
 	}
 
 	// Database configuration
@@ -31,16 +31,13 @@ func ConnectDatabase() error {
 		},
 	}
 
-	// Database path
+	// Connect to SQLite database
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
-		dbPath = "ball_knowledge.db"
+		dbPath = "ball_knowledge.db" // Default database name
 	}
 
-	// SQLite connection string with optimizations
-	dsn := fmt.Sprintf("%s?cache=shared&mode=rwc&_busy_timeout=5000&_journal_mode=WAL&_foreign_keys=on", dbPath)
-
-	database, err := gorm.Open(sqlite.Open(dsn), config)
+	database, err := gorm.Open(sqlite.Open(dbPath), config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
 	}
@@ -51,9 +48,9 @@ func ConnectDatabase() error {
 		return fmt.Errorf("failed to get underlying sql.DB: %v", err)
 	}
 
-	// SQLite optimized settings
-	sqlDB.SetMaxIdleConns(1)   // SQLite doesn't benefit from multiple connections
-	sqlDB.SetMaxOpenConns(1)   // SQLite is file-based, single connection is optimal
+	// Connection pool settings
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	// Auto-migrate database schema
@@ -68,17 +65,6 @@ func ConnectDatabase() error {
 
 // autoMigrate runs database migrations
 func autoMigrate(db *gorm.DB) error {
-	// Drop and recreate tables if there are schema issues (development only)
-	if os.Getenv("GIN_MODE") == "debug" {
-		// Only do this in debug mode and if the database is empty
-		var tableCount int64
-		db.Raw("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tableCount)
-
-		if tableCount == 0 {
-			log.Println("🔄 Creating fresh database schema...")
-		}
-	}
-
 	return db.AutoMigrate(
 		&models.User{},
 		&models.Match{},
@@ -100,6 +86,27 @@ func CloseDatabase() error {
 		}
 		return sqlDB.Close()
 	}
+	return nil
+}
+
+// SeedDatabase populates the database with initial data (optional)
+func SeedDatabase() error {
+	// Check if we already have users
+	var userCount int64
+	if err := DB.Model(&models.User{}).Count(&userCount).Error; err != nil {
+		return err
+	}
+
+	if userCount > 0 {
+		log.Println("Database already seeded, skipping...")
+		return nil
+	}
+
+	log.Println("Seeding database with sample data...")
+
+	// You can add sample data here if needed
+	// For now, we'll just log that seeding is available
+
 	return nil
 }
 
