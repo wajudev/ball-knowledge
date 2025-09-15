@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"ball-knowledge/backend/models"
+	"ball-knowledge/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

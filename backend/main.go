@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"ball-knowledge/backend/database"
-	"ball-knowledge/backend/routes"
+	"ball-knowledge/database"
+	"ball-knowledge/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

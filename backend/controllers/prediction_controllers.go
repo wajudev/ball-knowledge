@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"ball-knowledge/backend/database"
-	"ball-knowledge/backend/models"
+	"ball-knowledge/database"
+	"ball-knowledge/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

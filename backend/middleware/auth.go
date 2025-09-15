@@ -1,18 +1,18 @@
 package middleware
 
 import (
-"errors"
-"net/http"
-"os"
-"strings"
+	"errors"
+	"net/http"
+	"os"
+	"strings"
 
-"github.com/dgrijalva/jwt-go"
-"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type Claims struct {
 	UserID string `json:"user_id"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // AuthMiddleware validates JWT tokens
